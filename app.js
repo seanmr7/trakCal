@@ -14,14 +14,15 @@ const App = (function() {
   function init() {
     UICtrl.clearEditItemState();
 
-    const items = ItemsCtrl.getAllItems();
-    const totalCalories = ItemsCtrl.getTotalCalories();
+    const items = StorageCtrl.getLocalItems();
 
     if(items.length === 0) {
 
     } else {
-      UICtrl.populateItemList(items);
-      UICtrl.updateCalories(totalCalories);
+      ItemsCtrl.populateItemList(items);
+
+      UICtrl.populateItemList(ItemsCtrl.getAllItems());
+      UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
     }
     assignEventListeners();
   }
@@ -36,6 +37,7 @@ const App = (function() {
       UICtrl.clearItemInput();
 
       UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
+      StorageCtrl.setLocalItems(ItemsCtrl.getAllItems());
     }
   }
 
@@ -58,6 +60,7 @@ const App = (function() {
       UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
   
       UICtrl.clearEditItemState();
+      StorageCtrl.setLocalItems(ItemsCtrl.getAllItems());
     }
   }
 
@@ -70,6 +73,7 @@ const App = (function() {
     UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
 
     UICtrl.clearEditItemState();
+    StorageCtrl.setLocalItems(ItemsCtrl.getAllItems());
   }
 
   function clearEditState() {
@@ -81,6 +85,7 @@ const App = (function() {
     ItemsCtrl.clearAllItems();
     UICtrl.populateItemList(ItemsCtrl.getAllItems());
     UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
+    StorageCtrl.setItem(ItemsCtrl.getAllItems());
   }
 
   return {

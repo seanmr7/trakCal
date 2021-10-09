@@ -7,12 +7,18 @@ const ItemsCtrl = (function() {
 
   const data = {
     items: [
-      {id: 0, name: 'Steak Dinner', calories: 1200},
-      {id: 1, name: 'Cookie', calories: 400},
-      {id: 2, name: 'Egg', calories: 300},
+      // {id: 0, name: 'Steak Dinner', calories: 1200},
+      // {id: 1, name: 'Cookie', calories: 400},
+      // {id: 2, name: 'Egg', calories: 300},
     ],
     currentItem: null,
     totalCalories: 0
+  }
+
+  function populateItemList(array) {
+    array.forEach(item => {
+      addItem(item.name, item.calories);
+    })
   }
 
   function addItem(name, calories) {
@@ -44,7 +50,7 @@ const ItemsCtrl = (function() {
       }
     })
 
-    return data.currentItem
+    return data.currentItem;
   }
 
   function updateItem(name, calories) {
@@ -96,6 +102,7 @@ const ItemsCtrl = (function() {
   }
 
   return {
+    populateItemList: populateItemList,
     addItem: addItem,
     getItem: getItem,
     getAllItems: getAllItems,
@@ -104,5 +111,5 @@ const ItemsCtrl = (function() {
     updateItem: updateItem,
     deleteItem: deleteItem,
     resetCurrentItem: resetCurrentItem
-  }
+  };
 })()
