@@ -1,22 +1,44 @@
-// Add event Listeners
-document.querySelector('.add-btn').addEventListener('click',addItem);
-document.querySelector('.clear-btn').addEventListener('click', clearAll);
-document.querySelector('.clear-form-btn').addEventListener('click', UI.clearForm)
+const App = (function() {
+  const uiSelectors = UICtrl.getUISelectors();
 
-function addItem(e) {
-  e.preventDefault();
-  const item = {
-    name: `${document.getElementById('item-name').value}`,
-    calories: `${document.getElementById('item-calories').value}`
+  // Load event Listeners
+  function assignEventListeners() {
+  document.querySelector(uiSelectors.addBtn).addEventListener('click', addItem);
   }
 
-  Items.add(item);
-  UI.addItemUI(item);
+  function init() {
+    const items = ItemsCtrl.getAllItems();
+    const totalCalories = ItemsCtrl.getTotalCalories();
+    
+    UICtrl.populateItemList(items);
+    UICtrl.updateCalories(totalCalories);
 
-  UI.updateCalories(Items.getCalories());
-}
+    assignEventListeners();
+  }
 
-function clearAll() {
-  UI.clearAll();
-  Items.clearAllItems();
-}
+  function addItem(e) {
+    e.preventDefault();
+
+    const input = UICtrl.getItemInput();
+
+    if(input.name !== '' && input.calories !== '') {
+      const newItem = ItemsCtrl.addItem(input.name, input.calories);
+
+      UICtrl.addItemUI(newItem);
+      UICtrl.clearItemInput();
+
+      UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
+    }
+  }
+
+  function clearAll() {
+    UICtrl.clearAll();
+    ItemsCtrl.clearAllItems();
+  }
+
+  return {
+    init: init
+  }
+})();
+
+App.init();

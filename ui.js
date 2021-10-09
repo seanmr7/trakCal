@@ -1,61 +1,71 @@
-const UI = (function() {
+const UICtrl = (function() {
   // Define UI variables
-  const itemList = document.getElementById('item-list'),
-        itemName = document.getElementById('item-name'),
-        itemCals = document.getElementById('item-calories'),
-        addBtn = document.querySelector('add-btn'),
-        updateBtn = document.querySelector('update-btn'),
-        deleteBtn = document.querySelector('delete-btn'),
-        totalCals = document.querySelector('.total-calories');
-  
-  function init(itemList) {
-    itemList.forEach(function(item, index) {
-      addItemUI(item, index);
-    });
+  const uiSelectors = {
+    itemList: '#item-list',
+    itemName: '#item-name',
+    itemCalories: '#item-calories', 
+    addBtn: '.add-btn',
+    updateBtn: '.update-btn',
+    deleteBtn: '.delete-btn',
+    totalCalories: '.total-calories'
   }
 
-  function addItemUI(item, id) {
+  function populateItemList(items) {
+    let output;
+
+    items.forEach(item => {
+      output += `
+        <li class="collection-item" id="item-${item.id}"
+          <strong>${item.name}: </strong> <em>${item.calories} Calories</em>
+          <a href="#" class="secondary-content">
+            <i class="fa fa-pencil"></i>
+          </a>
+        <li>`
+    });
+    document.querySelector(uiSelectors.itemList).innerHTML = output;
+  }
+
+  function addItemUI(item) {
     const itemUI = document.createElement('li');
     itemUI.classList.add('collection-item');
-    itemUI.id = `item-${id}`
+    itemUI.id = `item-${item.id}`
     itemUI.innerHTML = `
-        <strong>${item.name}: </strong> <em>${item.calories}</em>
+        <strong>${item.name}: </strong> <em>${item.calories} Calories</em>
         <a href="#" class="secondary-content">
           <i class="fa fa-pencil"></i>
         </a>`;
-    itemList.appendChild(itemUI);
-
-    clearForm();
-  }
-
-  function clearForm() {
-    itemName.value = '';
-    itemCals.value = '';
+    document.querySelector(uiSelectors.itemList).appendChild(itemUI);
   }
 
   function removeItemUI() {
-
-  }
-
-  function clearAll() {
-    while(itemList.firstChild) {
-      itemList.removeChild(itemList.firstChild)
-    }
-
-    itemName.value = '';
-    itemCals.value = '';
   }
 
   function updateCalories(calories) {
-    totalCals.innerText = `${calories}`;
+    document.querySelector(uiSelectors.totalCalories).innerText = `${calories}`;
+  }
+  
+  function getItemInput() {
+    return {
+      name: document.querySelector(uiSelectors.itemName).value,
+      calories: document.querySelector(uiSelectors.itemCalories).value
+    }
+  }
+  function clearItemInput() {
+    document.querySelector(uiSelectors.itemName).value = ''
+    document.querySelector(uiSelectors.itemCalories).value = ''
+  }
+
+  function getUISelectors() {
+    return uiSelectors;
   }
 
   return {
-    init: init,
+    populateItemList: populateItemList,
     addItemUI: addItemUI,
     removeItemUI: removeItemUI,
-    clearForm: clearForm,
-    clearAll: clearAll,
+    getUISelectors: getUISelectors,
+    getItemInput: getItemInput,
+    clearItemInput: clearItemInput,
     updateCalories: updateCalories
   }
 })()
