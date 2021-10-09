@@ -7,21 +7,24 @@ const UICtrl = (function() {
     addBtn: '.add-btn',
     updateBtn: '.update-btn',
     deleteBtn: '.delete-btn',
+    backBtn: '.back-btn',
+    clearAllBtn: '.clear-btn',
     totalCalories: '.total-calories'
   }
 
   function populateItemList(items) {
-    let output;
-
+    let output = '';
+    
     items.forEach(item => {
       output += `
-        <li class="collection-item" id="item-${item.id}"
+      <li class="collection-item" id="item-${item.id}">
           <strong>${item.name}: </strong> <em>${item.calories} Calories</em>
           <a href="#" class="secondary-content">
             <i class="fa fa-pencil"></i>
           </a>
-        <li>`
+        </li>`
     });
+
     document.querySelector(uiSelectors.itemList).innerHTML = output;
   }
 
@@ -59,6 +62,33 @@ const UICtrl = (function() {
     return uiSelectors;
   }
 
+  function editItemState(item) {
+    // Hide Add Meal button
+    document.querySelector(uiSelectors.addBtn).style.display = 'none';
+
+    // Show Update Meal and Delete Meal buttons
+    document.querySelector(uiSelectors.updateBtn).style.display = 'inline';
+    document.querySelector(uiSelectors.deleteBtn).style.display = 'inline';
+    document.querySelector(uiSelectors.backBtn).style.display = 'inline';
+    
+    // Update form fields with item name and calories
+    document.querySelector(uiSelectors.itemName).value = `${item.name}`
+    document.querySelector(uiSelectors.itemCalories).value = `${item.calories}`
+  
+  }
+
+  function clearEditItemState() {
+    clearItemInput();
+
+    // Hide Update Meal and Delete Meal buttons
+    document.querySelector(uiSelectors.updateBtn).style.display = 'none';
+    document.querySelector(uiSelectors.deleteBtn).style.display = 'none';
+    document.querySelector(uiSelectors.backBtn).style.display = 'none';
+
+    // Display Add Meal button
+    document.querySelector(uiSelectors.addBtn).style.display = 'inline';
+  }
+
   return {
     populateItemList: populateItemList,
     addItemUI: addItemUI,
@@ -66,6 +96,8 @@ const UICtrl = (function() {
     getUISelectors: getUISelectors,
     getItemInput: getItemInput,
     clearItemInput: clearItemInput,
-    updateCalories: updateCalories
+    updateCalories: updateCalories,
+    clearEditItemState: clearEditItemState,
+    editItemState: editItemState
   }
 })()

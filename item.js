@@ -27,24 +27,54 @@ const ItemsCtrl = (function() {
 
     // Create new item object
     const item = new Item(ID, name, calories);
-    
     // Add new item object into data
     data.items.push(item);
 
     return item;
   }
 
-  function remove(id) {
-    item = getItem(id);
-    calories -= item.calories
-    items.splice(id, 1);
+  function getItem(id) {
+    // Parse item ID from UI ID
+    const ID = Number(id.split('-')[1]);
 
+    // Compare item ids with ID and set matching item
+    data.items.forEach(item => {
+      if(item.id === ID) {
+        data.currentItem = item;
+      }
+    })
+
+    return data.currentItem
   }
 
-  function getItem(id) {
-    return items.find(item => {
-      return item.id === id;
+  function updateItem(name, calories) {
+    // Update the current items name and calories
+    data.currentItem.name = name;
+    data.currentItem.calories = parseInt(calories);
+
+    // Return current item to null
+    resetCurrentItem();
+  }
+
+  function deleteItem() {
+    const ID = data.currentItem.id;
+
+    // Remove item from data structure
+    data.items.splice(ID, 1);
+
+    // Update ids for remaining items
+    data.items.forEach(item => {
+      if(item.id > ID) {
+        item.id -= 1;
+      }
     })
+
+    // Return current item to null
+    resetCurrentItem();
+  }
+
+  function resetCurrentItem() {
+    data.currentItem = null;
   }
 
   function getAllItems() {
@@ -52,30 +82,27 @@ const ItemsCtrl = (function() {
   }
 
   function clearAllItems() {
-    items = [];
-    calories = 0;
+    data.items = [];
   }
 
   function getTotalCalories() {
-    updateTotalCalories();
-    return data.totalCalories;
-  }
+    let total = 0;
 
-  function updateTotalCalories() {
-    const items = data.items;
-    data.totalCalories = 0;
-    items.forEach(function(item) {
-      data.totalCalories += item.calories;
+    data.items.forEach(function(item) {
+      total += item.calories;
     })
+    data.totalCalories = total;
+    return data.totalCalories;
   }
 
   return {
     addItem: addItem,
-    remove: remove,
     getItem: getItem,
     getAllItems: getAllItems,
     clearAllItems: clearAllItems,
-    getTotalCalories: getTotalCalories
+    getTotalCalories: getTotalCalories,
+    updateItem: updateItem,
+    deleteItem: deleteItem,
+    resetCurrentItem: resetCurrentItem
   }
-
 })()

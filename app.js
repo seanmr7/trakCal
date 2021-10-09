@@ -3,22 +3,30 @@ const App = (function() {
 
   // Load event Listeners
   function assignEventListeners() {
-  document.querySelector(uiSelectors.addBtn).addEventListener('click', addItem);
+    document.querySelector(uiSelectors.addBtn).addEventListener('click', addItem);
+    document.querySelector(uiSelectors.itemList).addEventListener('click', editItemState);
+    document.querySelector(uiSelectors.updateBtn).addEventListener('click', updateItem);
+    document.querySelector(uiSelectors.deleteBtn).addEventListener('click', deleteItem)
+    document.querySelector(uiSelectors.backBtn).addEventListener('click', clearEditState)
+    document.querySelector(uiSelectors.clearAllBtn).addEventListener('click', clearAll)
   }
 
   function init() {
+    UICtrl.clearEditItemState();
+
     const items = ItemsCtrl.getAllItems();
     const totalCalories = ItemsCtrl.getTotalCalories();
-    
-    UICtrl.populateItemList(items);
-    UICtrl.updateCalories(totalCalories);
 
+    if(items.length === 0) {
+
+    } else {
+      UICtrl.populateItemList(items);
+      UICtrl.updateCalories(totalCalories);
+    }
     assignEventListeners();
   }
 
-  function addItem(e) {
-    e.preventDefault();
-
+  function addItem() {
     const input = UICtrl.getItemInput();
 
     if(input.name !== '' && input.calories !== '') {
@@ -31,9 +39,48 @@ const App = (function() {
     }
   }
 
+  function editItemState(e) {
+    if(e.target.classList.contains('fa')) {
+      const item = ItemsCtrl.getItem(e.target.parentElement.parentElement.id);
+      UICtrl.editItemState(item);
+    }
+  }
+
+  function updateItem() {
+    const input = UICtrl.getItemInput();
+
+    if(input.name !== '' && input.calories !== '') {
+      // Update the item being edited
+      ItemsCtrl.updateItem(input.name, input.calories);
+
+      // Repopulate item list and update calories
+      UICtrl.populateItemList(ItemsCtrl.getAllItems());
+      UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
+  
+      UICtrl.clearEditItemState();
+    }
+  }
+
+  function deleteItem() {
+    // Delete the item being edited
+    ItemsCtrl.deleteItem();
+
+    // Repopulate item list and update calories
+    UICtrl.populateItemList(ItemsCtrl.getAllItems());
+    UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
+
+    UICtrl.clearEditItemState();
+  }
+
+  function clearEditState() {
+    ItemsCtrl.resetCurrentItem();
+    UICtrl.clearEditItemState();
+  }
+
   function clearAll() {
-    UICtrl.clearAll();
     ItemsCtrl.clearAllItems();
+    UICtrl.populateItemList(ItemsCtrl.getAllItems());
+    UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
   }
 
   return {
