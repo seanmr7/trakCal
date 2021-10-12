@@ -1,8 +1,9 @@
 const ItemsCtrl = (function() {
-  const Item = function(id, name, calories) {
+  const Item = function(id, userID, name, calories) {
     this.id = id;
     this.name = name;
-    this.calories = calories
+    this.calories = calories;
+    this.userID = userID;
   }
 
   const data = {
@@ -17,11 +18,17 @@ const ItemsCtrl = (function() {
 
   function populateItemList(array) {
     array.forEach(item => {
-      addItem(item.name, item.calories);
+      const newItem = new Item(item.id, item.userID, item.name, item.calories);
+      data.items.push(newItem);
     })
   }
 
-  function addItem(name, calories) {
+  function addItem(name, calories, user) {
+    let userID;
+    if (user === false) {
+      userID = -14;
+    } else { userID = user.id }
+    
     let ID;
     if(data.items.length > 0) {
       ID = data.items[data.items.length - 1].id + 1
@@ -32,7 +39,7 @@ const ItemsCtrl = (function() {
     calories = parseInt(calories);
 
     // Create new item object
-    const item = new Item(ID, name, calories);
+    const item = new Item(ID, userID, name, calories);
     // Add new item object into data
     data.items.push(item);
 
@@ -83,8 +90,18 @@ const ItemsCtrl = (function() {
     data.currentItem = null;
   }
 
-  function getAllItems() {
-    return data.items;
+  function getItems(user) {
+    if(user === false) {
+      return data.items
+    } else { 
+      let userItems = []
+      data.items.forEach(item => {
+        if(item.userID === user.id) {
+          userItems.push(item)
+        }
+      })
+      return userItems;
+    }
   }
 
   function clearAllItems() {
@@ -105,7 +122,7 @@ const ItemsCtrl = (function() {
     populateItemList: populateItemList,
     addItem: addItem,
     getItem: getItem,
-    getAllItems: getAllItems,
+    getItems: getItems,
     clearAllItems: clearAllItems,
     getTotalCalories: getTotalCalories,
     updateItem: updateItem,

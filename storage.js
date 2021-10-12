@@ -14,8 +14,24 @@ const StorageCtrl = (function() {
     localStorage.setItem('items', JSON.stringify(items));
   }
 
+  function getUsers() {
+    let users;
+    if(localStorage.getItem('users') === null) {
+      users = []
+    } else {
+      users = JSON.parse(localStorage.getItem('users'))
+    }
+    return users;
+  }
+
+  function setUsers(users) {
+    localStorage.setItem('users', JSON.stringify(users));
+  }
+
   return {
     getLocalItems: getLocalItems,
-    setLocalItems: setLocalItems
+    setLocalItems: setLocalItems,
+    getUsers: getUsers,
+    setUsers: setUsers
   };
 })()

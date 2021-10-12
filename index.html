@@ -6,6 +6,9 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+  <style>
+    .collection .collection-item.active {background-color: #2196F3;};
+  </style>
   <title>TrakCal | Meal & Calorie Tracker</title>
 </head>
 <body>
@@ -19,20 +22,72 @@
       </div>
     </div>
   </nav>
+  
+  <div class="row">
+    <div class="container">
+      <ul id="slide-out" class="side-nav collection with-header">
+        <li class="collection-header"><h5>Profiles</h5></li>
+        <!-- <li>
+          <a href="#!" class="collection-item active white-text">
+            <strong>John Smith</strong> <em>Age: 25 BMI: 47</em>
+          </a>
+        </li>
+        <li>
+          <a href="#!" class="collection-item black-text">
+            <strong>Jenn Apple</strong> <em>Age: 25 BMI: 47</em>
+          </a>
+        </li>
+        <li>
+          <a href="#!" class="collection-item black-text">
+            <strong>Jenn Apple</strong> <em>Age: 25 BMI: 47</em>
+          </a>
+        </li> -->
+        <li class="collection-item"><a href="#" class="add-user-btn btn blue darken-3 hoverable ">Add Profile</a></li>
+      </ul>
+    </div>
+  </div>
 
+  <a href="#" data-target="slide-out" class="sidenav-trigger"><i class="material-icons"></i></a>
   <br>
+  <div class="container">
+    <div class="row">
+      <h5 class="card-title col s12 current-user"></h5>
+      <div class="col"><a href="#" data-activates="slide-out" class="center button-collapse btn blue lighten-3">Change User</a></div>
+    </div>
+  </div>
 
   <div class="container">
     <div class="card">
       <div class="card-content">
-        <span class="card-title">Add Meal / Food Item</span>
         <form class="col">
-          <div class="row">
+          <div class="row user-form-fields">
+            <span class="profile-card card-title">Create a Profile</span>
+            <div class="input-field col s9">
+              <input type="text" placeholder="Your name" id="user-name">
+              <label for="user-name">Name</label>
+            </div>
+            <div class="input-field col s3">
+              <input type="number" placeholder="37" id="user-age">
+              <label for="item-name">Age</label>
+            </div>
+            <div class="input-field col s6">
+              <input type="number" placeholder="In inches" id="user-height">
+              <label for="item-name">Height</label>
+            </div>
+            <div class="input-field col s6">
+              <input type="number" placeholder="in lbs" id="user-weight">
+              <label for="item-name">Weight</label>
+            </div>
+            <button class="form-add-user-btn btn blue darken-3"><i class="fa fa-plus"></i> Add Profile</button>
+            <button class="decline-profile-btn btn amber darken-3"><i class="fa fa-minus"></i> No Thanks</button>
+          </div>
+          <div class="row item-form-fields">
+            <span class="meal-card card-title col s12">Or Add a Meal</span>
             <div class="input-field col s6">
               <input type="text" placeholder="Add Item" id="item-name">
               <label for="item-name">Meal</label>
             </div>
-            <div class="input-field col s6">
+            <div class="input-field col s6" >
                 <input type="number" placeholder="Add Calories" id="item-calories">
                 <label for="item-calories">Calories</label>
             </div>
@@ -80,6 +135,14 @@
   <script src="storage.js"></script>
   <script src="item.js"></script> 
   <script src="ui.js"></script> 
+  <script src="user.js"></script> 
   <script src="app.js"></script> 
+  <script type="text/javascript">
+    $(".button-collapse").sideNav({
+      menuWidth: 400,
+      edge: 'left',
+      closeOnClick: true
+    });
+  </script>
 </body>
 </html>
