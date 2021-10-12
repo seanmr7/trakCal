@@ -1,11 +1,11 @@
 const UserCtrl = (function() {
-  const User = function(id, name, age, height, weight) {
+  const User = function(id, name, age, height, weight, bmi) {
     this.id = id;
     this.name = name;
     this.age = age;
     this.weight = weight;
     this.height = height;
-    this.bmi = calcBMI(weight, height);
+    this.bmi = bmi;
   }
 
   const users = {
@@ -22,7 +22,7 @@ const UserCtrl = (function() {
       users.currentUser = 'declined';
     } else {
     array.forEach(user => {
-      const newUser = new User(user.id, user.name, user.height, user.weight);
+      const newUser = new User(user.id, user.name, user.height, user.weight, user.bmi);
       users.items.push(newUser);
       users.currentUser = newUser;
       });
@@ -35,7 +35,7 @@ const UserCtrl = (function() {
   function addUser(name, age, height, weight) {
     let ID;
     if(users.usersArr.length > 0) {
-      ID = data.items[data.items.length - 1].id + 1
+      ID = users.usersArr[users.usersArr.length - 1].id + 1
     } else {
       ID = 0;
     }
@@ -44,9 +44,10 @@ const UserCtrl = (function() {
     age = parseInt(age);
     height = parseInt(height);
     weight = parseInt(weight);
-
+    bmi = Math.round(calcBMI(weight, height));
+    console.log(bmi)
     // Create new User object
-    const user = new User(ID, name, age, height, weight);
+    const user = new User(ID, name, age, height, weight, bmi);
 
     users.usersArr.push(user);
     users.currentUser = user;

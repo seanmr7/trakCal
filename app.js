@@ -12,6 +12,7 @@ const App = (function() {
     document.querySelector(uiSelectors.addUserFormBtn).addEventListener('click', addUserSubmit);
     document.querySelector(uiSelectors.declineBtn).addEventListener('click', declineProfile);
     document.querySelector(uiSelectors.userNav).addEventListener('click', changeCurrentUser);
+    document.querySelector(uiSelectors.addUserBtn).addEventListener('click', addUserForm)
   
   }
 
@@ -21,7 +22,7 @@ const App = (function() {
     const items = StorageCtrl.getLocalItems();
     const users = StorageCtrl.getUsers();
 
-    // Populates the users array prior to setting the home page state
+    // Populates the users array prior to setting the page state
     if(users != undefined && users.length > 0) {
       UserCtrl.populateUsers(users);
     }
@@ -37,6 +38,7 @@ const App = (function() {
       UICtrl.populateItemList(ItemsCtrl.getItems(false));
       UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
     } else {
+      ItemsCtrl.populateItemList(items);
       UICtrl.clearEditUserState(UserCtrl.getCurrentUser());
       UICtrl.populateItemList(items);
       UICtrl.populateUserList(UserCtrl.getUsers(), UserCtrl.getCurrentUser());
@@ -112,6 +114,7 @@ const App = (function() {
     const input = UICtrl.getUserFormInput();
     UserCtrl.addUser(input.name, input.age, input.height, input.weight);
     UICtrl.clearEditUserState(UserCtrl.getCurrentUser());
+    UICtrl.addUserUI(UserCtrl.getCurrentUser())
   }
 
   function declineProfile() {
@@ -134,6 +137,10 @@ const App = (function() {
       UICtrl.updateUserHeader(UserCtrl.getCurrentUser());
       UICtrl.updateNavHighlight();
     }
+  }
+
+  function addUserForm() {
+    UICtrl.editUserState(UserCtrl.getCurrentUser());
   }
 
   return {

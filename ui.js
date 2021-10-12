@@ -143,6 +143,22 @@ const UICtrl = (function() {
     }
   }
 
+  function addUserUI(currentUser) {
+    // Remove highlight from previous user
+    updateNavHighlight(currentUser)
+
+    // Create new user list item
+    const li = `<li>
+      <a href="#!" id="user-${currentUser.id}" class="collection-item active white-text user">
+        <strong>${currentUser.name}</strong> <em>Age: ${currentUser.age} BMI: ${currentUser.bmi}</em>
+      </a>
+    <li>`
+
+    // Insert list item before Add User button
+    console.log(li)
+    document.querySelector(uiSelectors.userNav).lastElementChild.insertAdjacentHTML('beforebegin', li);
+  }
+
   function updateNavHighlight(currentUser) {
     const elements = Array.from(document.querySelector(uiSelectors.userNav).getElementsByTagName('a'));
     elements.forEach(element => {
@@ -202,6 +218,7 @@ const UICtrl = (function() {
     clearEditUserState: clearEditUserState,
     editUserState: editUserState,
     updateUserHeader: updateUserHeader,
-    updateNavHighlight: updateNavHighlight
+    updateNavHighlight: updateNavHighlight,
+    addUserUI: addUserUI
   }
 })()
