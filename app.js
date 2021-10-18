@@ -39,23 +39,24 @@ const App = (function() {
     }
 
     if(UserCtrl.getCurrentUser() === 'declined') {
-      ItemsCtrl.populateItemList(items);
-      UICtrl.initialUserState();
+      UICtrl.clearUserFormState(false);
       UICtrl.populateItemList(ItemsCtrl.getItems(false));
-      UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
+      UICtrl.updateCalories(ItemsCtrl.getTotalCalories(false));
     } else if(items.length === 0 && UserCtrl.getCurrentUser() === false) {
-      ItemsCtrl.populateItemList(items);
       UICtrl.initialUserState();
       UICtrl.populateItemList(ItemsCtrl.getItems(false));
-      UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
+      UICtrl.updateCalories(ItemsCtrl.getTotalCalories(false));
     } else {
-      ItemsCtrl.populateItemList(items);
+      // Clear the create user form
       UICtrl.clearUserFormState(UserCtrl.getCurrentUser());
-      UICtrl.populateItemList(items);
+      
+      // Set Items data structure to local storage items
+      ItemsCtrl.populateItemList(items);
+
+      // Populate the UI elements
       UICtrl.populateUserList(UserCtrl.getUsers(), UserCtrl.getCurrentUser());
-      UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
-      //UICtrl.populateItemList(ItemsCtrl.getItems(UserCtrl.getCurrentUser()))
-      //UICtrl.populateItemList(ItemsCtrl.getTotalCalories(UserCtrl.getCurrentUser()))
+      UICtrl.populateItemList(ItemsCtrl.getItems(UserCtrl.getCurrentUser()))
+      UICtrl.updateCalories(ItemsCtrl.getTotalCalories(UserCtrl.getCurrentUser()))
     }
     assignEventListeners();
   }
@@ -69,8 +70,8 @@ const App = (function() {
       UICtrl.addItemUI(newItem);
       UICtrl.clearItemInput();
 
-      UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
-      StorageCtrl.setLocalItems(ItemsCtrl.getItems(UserCtrl.getCurrentUser()));
+      UICtrl.updateCalories(ItemsCtrl.getTotalCalories(UserCtrl.getCurrentUser()));
+      StorageCtrl.setLocalItems(ItemsCtrl.getAllItems());
     }
   }
 
@@ -90,10 +91,10 @@ const App = (function() {
 
       // Repopulate item list and update calories
       UICtrl.populateItemList(ItemsCtrl.getItems(UserCtrl.getCurrentUser()));
-      UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
+      UICtrl.updateCalories(ItemsCtrl.getTotalCalories(UserCtrl.getCurrentUser()));
   
       UICtrl.clearEditItemState();
-      StorageCtrl.setLocalItems(ItemsCtrl.getItems(false));
+      StorageCtrl.setLocalItems(ItemsCtrl.getAllItems());
     }
   }
 
@@ -103,10 +104,10 @@ const App = (function() {
 
     // Repopulate item list and update calories
     UICtrl.populateItemList(ItemsCtrl.getItems(UserCtrl.getCurrentUser()));
-    UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
+    UICtrl.updateCalories(ItemsCtrl.getTotalCalories(UserCtrl.getCurrentUser()));
 
     UICtrl.clearEditItemState();
-    StorageCtrl.setLocalItems(ItemsCtrl.getItems(false));
+    StorageCtrl.setLocalItems(ItemsCtrl.getAllItems());
   }
 
   function clearEditState() {
@@ -127,7 +128,9 @@ const App = (function() {
     else { 
       UserCtrl.addUser(input.name, input.age, input.height, input.weight);
       UICtrl.clearUserFormState(UserCtrl.getCurrentUser());
-      UICtrl.addUserUI(UserCtrl.getCurrentUser())
+      UICtrl.addUserUI(UserCtrl.getCurrentUser());
+      UICtrl.populateItemList(ItemsCtrl.getItems(UserCtrl.getCurrentUser()));
+      UICtrl.updateCalories(ItemsCtrl.getTotalCalories(UserCtrl.getCurrentUser()));
     }
   }
 
@@ -144,6 +147,8 @@ const App = (function() {
       // Update the header, calories, and food items
       UICtrl.updateUserHeader(UserCtrl.getCurrentUser());
       UICtrl.updateNavHighlight(UserCtrl.getCurrentUser());
+      UICtrl.populateItemList(ItemsCtrl.getItems(UserCtrl.getCurrentUser()));
+      UICtrl.updateCalories(ItemsCtrl.getTotalCalories(UserCtrl.getCurrentUser()));
     }
 
     if(e.target.parentElement.classList.contains('user')) {

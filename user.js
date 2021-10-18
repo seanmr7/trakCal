@@ -9,7 +9,7 @@ const UserCtrl = (function() {
   }
 
   const users = {
-    currentUser: {id: 0, name: 'John Smith', age: 25, height: 70, weight: 260, bmi: 37},
+    currentUser: false,
     usersArr: [
       {id: 0, name: 'John Smith', age: 25, height: 70, weight: 260, bmi: 37},
       {id: 1, name: 'Jenn Apple', age: 21, height: 55, weight: 120, bmi: 27},

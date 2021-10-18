@@ -61,12 +61,13 @@ const ItemsCtrl = (function() {
   }
 
   function updateItem(name, calories) {
+    console.log(data.currentItem)
     // Update the current items name and calories
     data.currentItem.name = name;
     data.currentItem.calories = parseInt(calories);
 
     data.items.forEach(item => {
-      if(item.id === currentItem.id) {
+      if(item.id === data.currentItem.id) {
         // Update the items name and calories in the data structure
         item.name = name;
         item.calories = parseInt(calories);
@@ -80,12 +81,9 @@ const ItemsCtrl = (function() {
     const ID = data.currentItem.id;
 
     // Remove item from data structure
-    data.items.splice(ID, 1);
-
-    // Update ids for remaining items
-    data.items.forEach(item => {
-      if(item.id > ID) {
-        item.id -= 1;
+    data.items.forEach((item, index) => {
+      if(item.id === ID) {
+        data.items.splice(index, 1);
       }
     })
 
@@ -97,32 +95,51 @@ const ItemsCtrl = (function() {
     data.currentItem = null;
   }
 
+  function getAllItems() {
+    return data.items;
+  }
+
   function getItems(user) {
     if(user === false) {
-      return data.items
+      return _getItemsUtility(-14);
     } else { 
-      let userItems = []
-      data.items.forEach(item => {
-        if(item.userID === user.id) {
-          userItems.push(item)
-        }
-      })
-      return userItems;
+      return _getItemsUtility(user.id);
     }
+  }
+
+  function _getItemsUtility(id) {
+    let items = [];
+    data.items.forEach(item => {
+      if(item.userID === id) {
+        items.push(item)
+      }
+    })
+    return items;
   }
 
   function clearAllItems() {
     data.items = [];
   }
 
-  function getTotalCalories() {
-    let total = 0;
+  function getTotalCalories(user) {
+    // Returns total calories of all unassigned food items if no user is submitted
+    if(user === false) {
+      data.totalCalories = sumCalories(-14);
+      return data.totalCalories;
+      } else {
+      data.totalCalories = sumCalories(user.id);
+      return data.totalCalories;
+    }
+  }
 
-    data.items.forEach(function(item) {
-      total += item.calories;
+  function sumCalories(userID) {
+    let total = 0
+    data.items.forEach(item => {
+      if(item.userID === userID) {
+        total += item.calories;
+      }
     })
-    data.totalCalories = total;
-    return data.totalCalories;
+    return total;
   }
 
   return {
@@ -134,6 +151,7 @@ const ItemsCtrl = (function() {
     getTotalCalories: getTotalCalories,
     updateItem: updateItem,
     deleteItem: deleteItem,
-    resetCurrentItem: resetCurrentItem
+    resetCurrentItem: resetCurrentItem,
+    getAllItems: getAllItems
   };
 })()

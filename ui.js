@@ -152,7 +152,7 @@ const UICtrl = (function() {
       document.querySelector(uiSelectors.editUserBtn).style.display = 'none';
     } else {
       document.querySelector(uiSelectors.currentUserHeader).innerHTML = `
-      Hi <b>${input.name}</b> <em>(Age: ${input.age}, Height: ${input.height}, Weight: ${input.weight}, BMI: ${input.bmi})</em>
+      Hi <b>${input.name}</b> <em>(Age: ${input.age}, Height: ${input.height}", Weight: ${input.weight} lb, BMI: ${input.bmi})</em>
       `;
       document.querySelector(uiSelectors.editUserBtn).style.display = '';
     }
@@ -170,7 +170,6 @@ const UICtrl = (function() {
     <li>`
 
     // Insert list item before Add User button
-    console.log(li)
     document.querySelector(uiSelectors.userNav).lastElementChild.insertAdjacentHTML('beforebegin', li);
   }
 
