@@ -23,6 +23,10 @@ const UICtrl = (function() {
     profileCard: 'profile-card',
     currentUserHeader: '.current-user',
     declineBtn: '.decline-profile-btn',
+    editUserSubmitBtn: '.form-edit-user-btn',
+    editUserBtn: '.edit-user-btn',
+    deleteUserBtn: '.delete-user-btn',
+    cancelUserSubmitBtn: '.cancel-user-btn',
     collectionHeader: '.collection-header',
     userNav: '.side-nav'
   }
@@ -135,11 +139,22 @@ const UICtrl = (function() {
     }
   }
 
-  function updateUserHeader(currentUser) {
-    if(currentUser === false) {
-      document.querySelector(uiSelectors.currentUserHeader).innerText = `You Haven't Made any Profiles`;
+  function clearUserForm() {
+      document.querySelector(uiSelectors.userName).value = '';
+      document.querySelector(uiSelectors.userAge).value = '';
+      document.querySelector(uiSelectors.userHeight).value = '';
+      document.querySelector(uiSelectors.userWeight).value = '';
+  }
+
+  function updateUserHeader(input) {
+    if(typeof input === 'string') {
+      document.querySelector(uiSelectors.currentUserHeader).innerText = input;
+      document.querySelector(uiSelectors.editUserBtn).style.display = 'none';
     } else {
-      document.querySelector(uiSelectors.currentUserHeader).innerText = `Hi ${currentUser.name}`;
+      document.querySelector(uiSelectors.currentUserHeader).innerHTML = `
+      Hi <b>${input.name}</b> <em>(Age: ${input.age}, Height: ${input.height}, Weight: ${input.weight}, BMI: ${input.bmi})</em>
+      `;
+      document.querySelector(uiSelectors.editUserBtn).style.display = '';
     }
   }
 
@@ -177,30 +192,75 @@ const UICtrl = (function() {
     })
   }
 
-  function clearEditUserState(currentUser) {
-    updateUserHeader(currentUser);
+  function updateUserUI(currentUser) {
+    const elements = Array.from(document.querySelector(uiSelectors.userNav).getElementsByTagName('a'));
+    elements.forEach(element => {
+      // Identify the list item containing the current user.
+      if(Number(element.id.split('-')[1]) === currentUser.id) {
+        element.innerHTML = `<strong>${currentUser.name}</strong> <em>Age: ${currentUser.age} BMI: ${currentUser.bmi}</em>`
+      }
+    })
+  }
+
+  function deleteUserUI(currentUser) {
+    const elements = Array.from(document.querySelector(uiSelectors.userNav).getElementsByTagName('a'));
+    elements.forEach(element => {
+      // Identify the list item containing the current user.
+      if(Number(element.id.split('-')[1]) === currentUser.id) {
+        element.remove();
+      }
+    })
+  }
+
+  function initialUserState() { 
+    updateUserHeader(`You Haven't Made any Profiles`);
+    // Hide Item input fields
+    clearEditItemState();
+
+    // Hide unused buttons
+    document.querySelector(uiSelectors.editUserSubmitBtn).style.display = 'none';
+    document.querySelector(uiSelectors.cancelUserSubmitBtn).style.display = 'none';   
+  }
+
+  function clearUserFormState(currentUser) {
     // Hide User input fields
     document.querySelector(uiSelectors.userFormField).style.display = 'none';
     document.querySelector(uiSelectors.addUserFormBtn).style.display = 'none';
+    document.querySelector(uiSelectors.cancelUserSubmitBtn).style.display = 'none';
+    document.querySelector(uiSelectors.editUserSubmitBtn).style.display = 'none';
+    document.querySelector(uiSelectors.declineBtn).style.display = 'none';
+    clearUserForm();
 
     document.querySelector(uiSelectors.mealCard).innerText = `Add Meal / Food Item`
+
+    if(currentUser === false) {
+      updateUserHeader(`No Profile Selected`)
+    } else {
+      updateUserHeader(currentUser);
+    }
   }
 
-  function editUserState(currentUser) {
-    updateUserHeader(currentUser);
-    // Hide Item input fields
+  function showUserFormState(currentUser, state) {
+    clearUserForm();
     clearEditItemState();
-    const itemFields = document.querySelectorAll(uiSelectors.itemFormFields);
-    itemFields.forEach(field => {
-      field.style.display = 'none'
-    })
-    document.querySelector(uiSelectors.addBtn).style.display = 'inline';
+  
     // Show User input fields
-    const userFields = document.querySelectorAll(uiSelectors.userFormField);
-    userFields.forEach(field => {
-      field.style.display = 'block';
-    })
-    document.querySelector(uiSelectors.addUserFormBtn).style.display = 'inline';
+    document.querySelector(uiSelectors.userFormField).style.display = 'block';
+    document.querySelector(uiSelectors.cancelUserSubmitBtn).style.display = 'inline';
+    if(state.classList.contains('edit-user-btn')) {
+      document.querySelector(uiSelectors.userName).value = `${currentUser.name}`;
+      document.querySelector(uiSelectors.userAge).value = `${currentUser.age}`;
+      document.querySelector(uiSelectors.userHeight).value = `${currentUser.height}`;
+      document.querySelector(uiSelectors.userWeight).value = `${currentUser.weight}`;
+
+      document.querySelector(uiSelectors.editUserSubmitBtn).style.display = 'inline';
+      document.querySelector(uiSelectors.deleteUserBtn).style.display = 'inline';
+    } else {
+      updateUserHeader('Add a New Profile');
+      document.querySelector(uiSelectors.addUserFormBtn).style.display = 'inline';
+      document.querySelector(uiSelectors.editUserBtn).style.display = 'none';
+      document.querySelector(uiSelectors.deleteUserBtn).style.display = 'none';
+    }
   }
 
   return {
@@ -213,12 +273,15 @@ const UICtrl = (function() {
     clearEditItemState: clearEditItemState,
     editItemState: editItemState,
     // Public User UI Methods
+    initialUserState: initialUserState,
     populateUserList: populateUserList,
     getUserFormInput: getUserFormInput,
-    clearEditUserState: clearEditUserState,
-    editUserState: editUserState,
+    clearUserFormState: clearUserFormState,
+    showUserFormState: showUserFormState,
     updateUserHeader: updateUserHeader,
     updateNavHighlight: updateNavHighlight,
-    addUserUI: addUserUI
+    addUserUI: addUserUI,
+    updateUserUI: updateUserUI,
+    deleteUserUI: deleteUserUI
   }
 })()

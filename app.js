@@ -4,6 +4,14 @@ const App = (function() {
   // Load event Listeners
   function assignEventListeners() {
     document.querySelector(uiSelectors.addBtn).addEventListener('click', addItem);
+
+    // Prevent form submission with enter
+    document.addEventListener('keypress', function(e) {
+      if(e.key === 13 || e.which === 13) {
+        e.preventDefault();
+        return false;
+      }
+    })
     document.querySelector(uiSelectors.itemList).addEventListener('click', editItemState);
     document.querySelector(uiSelectors.updateBtn).addEventListener('click', updateItem);
     document.querySelector(uiSelectors.deleteBtn).addEventListener('click', deleteItem);
@@ -12,8 +20,11 @@ const App = (function() {
     document.querySelector(uiSelectors.addUserFormBtn).addEventListener('click', addUserSubmit);
     document.querySelector(uiSelectors.declineBtn).addEventListener('click', declineProfile);
     document.querySelector(uiSelectors.userNav).addEventListener('click', changeCurrentUser);
-    document.querySelector(uiSelectors.addUserBtn).addEventListener('click', addUserForm)
-  
+    document.querySelector(uiSelectors.addUserBtn).addEventListener('click', showUserForm);
+    document.querySelector(uiSelectors.editUserBtn).addEventListener('click', showUserForm);
+    document.querySelector(uiSelectors.cancelUserSubmitBtn).addEventListener('click', cancelUserForm);
+    document.querySelector(uiSelectors.editUserSubmitBtn).addEventListener('click', updateUser);
+    document.querySelector(uiSelectors.deleteUserBtn).addEventListener('click', deleteUser);
   }
 
   function init() {
@@ -29,17 +40,17 @@ const App = (function() {
 
     if(UserCtrl.getCurrentUser() === 'declined') {
       ItemsCtrl.populateItemList(items);
-      UICtrl.clearEditUserState(false);
+      UICtrl.initialUserState();
       UICtrl.populateItemList(ItemsCtrl.getItems(false));
       UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
     } else if(items.length === 0 && UserCtrl.getCurrentUser() === false) {
       ItemsCtrl.populateItemList(items);
-      UICtrl.editUserState(false);
+      UICtrl.initialUserState();
       UICtrl.populateItemList(ItemsCtrl.getItems(false));
       UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
     } else {
       ItemsCtrl.populateItemList(items);
-      UICtrl.clearEditUserState(UserCtrl.getCurrentUser());
+      UICtrl.clearUserFormState(UserCtrl.getCurrentUser());
       UICtrl.populateItemList(items);
       UICtrl.populateUserList(UserCtrl.getUsers(), UserCtrl.getCurrentUser());
       UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
@@ -112,13 +123,16 @@ const App = (function() {
 
   function addUserSubmit() {
     const input = UICtrl.getUserFormInput();
-    UserCtrl.addUser(input.name, input.age, input.height, input.weight);
-    UICtrl.clearEditUserState(UserCtrl.getCurrentUser());
-    UICtrl.addUserUI(UserCtrl.getCurrentUser())
+    if(input.name === '' || input.age === '' || input.height === '' || input.weight === '') { } 
+    else { 
+      UserCtrl.addUser(input.name, input.age, input.height, input.weight);
+      UICtrl.clearUserFormState(UserCtrl.getCurrentUser());
+      UICtrl.addUserUI(UserCtrl.getCurrentUser())
+    }
   }
 
   function declineProfile() {
-    UICtrl.clearEditUserState(false);
+    UICtrl.clearUserFormState(false);
     StorageCtrl.setUsers('declined');
   }
 
@@ -139,8 +153,28 @@ const App = (function() {
     }
   }
 
-  function addUserForm() {
-    UICtrl.editUserState(UserCtrl.getCurrentUser());
+  function showUserForm(e) {
+    UICtrl.showUserFormState(UserCtrl.getCurrentUser(), e.target);
+  }
+
+  function cancelUserForm() {
+    UICtrl.clearUserFormState(UserCtrl.getCurrentUser());
+  }
+
+  function updateUser() {
+    const input = UICtrl.getUserFormInput();
+    if(input.name === '' || input.age === '' || input.height === '' || input.weight === '') { } 
+    else { 
+      UserCtrl.updateUser(input.name, input.age, input.height, input.weight);
+      UICtrl.clearUserFormState(UserCtrl.getCurrentUser());
+      UICtrl.updateUserUI(UserCtrl.getCurrentUser())
+    }
+  }
+
+  function deleteUser() {
+    UICtrl.deleteUserUI(UserCtrl.getCurrentUser());
+    UserCtrl.deleteUser();
+    UICtrl.clearUserFormState(UserCtrl.getCurrentUser());
   }
 
   return {

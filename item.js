@@ -65,6 +65,13 @@ const ItemsCtrl = (function() {
     data.currentItem.name = name;
     data.currentItem.calories = parseInt(calories);
 
+    data.items.forEach(item => {
+      if(item.id === currentItem.id) {
+        // Update the items name and calories in the data structure
+        item.name = name;
+        item.calories = parseInt(calories);
+      }
+    })
     // Return current item to null
     resetCurrentItem();
   }
