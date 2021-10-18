@@ -10,24 +10,17 @@ const UserCtrl = (function() {
 
   const users = {
     currentUser: false,
-    usersArr: [
-      {id: 0, name: 'John Smith', age: 25, height: 70, weight: 260, bmi: 37},
-      {id: 1, name: 'Jenn Apple', age: 21, height: 55, weight: 120, bmi: 27},
-      {id: 2, name: 'Cool Cat', age: 43, height: 60, weight: 150, bmi: 29}
-    ]
+    usersArr: []
   }
 
-  function populateUsers(array) {
-    if(array === 'declined') {
-      users.currentUser = 'declined';
-    } else {
+  function populateUsers(array, currentUser) {
     array.forEach(user => {
-      const newUser = new User(user.id, user.name, user.height, user.weight, user.bmi);
-      users.items.push(newUser);
-      users.currentUser = newUser;
+      const newUser = new User(user.id, user.name, user.age, user.height, user.weight, user.bmi);
+      users.usersArr.push(newUser);
       });
-    }
+    users.currentUser = currentUser;
   }
+
   function calcBMI(weight, height) {
     return (weight / height**2 * 703)
   }

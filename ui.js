@@ -218,7 +218,9 @@ const UICtrl = (function() {
 
     // Hide unused buttons
     document.querySelector(uiSelectors.editUserSubmitBtn).style.display = 'none';
-    document.querySelector(uiSelectors.cancelUserSubmitBtn).style.display = 'none';   
+    document.querySelector(uiSelectors.cancelUserSubmitBtn).style.display = 'none';
+    document.querySelector(uiSelectors.deleteUserBtn).style.display = 'none';
+
   }
 
   function clearUserFormState(currentUser) {

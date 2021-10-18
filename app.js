@@ -33,20 +33,17 @@ const App = (function() {
     const items = StorageCtrl.getLocalItems();
     const users = StorageCtrl.getUsers();
 
-    // Populates the users array prior to setting the page state
-    if(users != undefined && users.length > 0) {
-      UserCtrl.populateUsers(users);
-    }
-
-    if(UserCtrl.getCurrentUser() === 'declined') {
+    if(users.currentUser === 'declined') {
+      ItemsCtrl.populateItemList(items);
       UICtrl.clearUserFormState(false);
       UICtrl.populateItemList(ItemsCtrl.getItems(false));
       UICtrl.updateCalories(ItemsCtrl.getTotalCalories(false));
-    } else if(items.length === 0 && UserCtrl.getCurrentUser() === false) {
+    } else if(items.length === 0 && users.currentUser === false) {
       UICtrl.initialUserState();
-      UICtrl.populateItemList(ItemsCtrl.getItems(false));
-      UICtrl.updateCalories(ItemsCtrl.getTotalCalories(false));
     } else {
+      // Set the Users data structure from local storage
+      UserCtrl.populateUsers(users.usersArr, users.currentUser);
+
       // Clear the create user form
       UICtrl.clearUserFormState(UserCtrl.getCurrentUser());
       
@@ -131,12 +128,14 @@ const App = (function() {
       UICtrl.addUserUI(UserCtrl.getCurrentUser());
       UICtrl.populateItemList(ItemsCtrl.getItems(UserCtrl.getCurrentUser()));
       UICtrl.updateCalories(ItemsCtrl.getTotalCalories(UserCtrl.getCurrentUser()));
+
+      StorageCtrl.setUsers(UserCtrl.getUsers(), UserCtrl.getCurrentUser());
     }
   }
 
   function declineProfile() {
     UICtrl.clearUserFormState(false);
-    StorageCtrl.setUsers('declined');
+    StorageCtrl.setUsers('declined', 'declined');
   }
 
   function changeCurrentUser(e) {
@@ -156,6 +155,8 @@ const App = (function() {
       UICtrl.updateUserHeader(UserCtrl.getCurrentUser());
       UICtrl.updateNavHighlight();
     }
+
+    StorageCtrl.setUsers(UserCtrl.getUsers(), UserCtrl.getCurrentUser());
   }
 
   function showUserForm(e) {
@@ -172,7 +173,9 @@ const App = (function() {
     else { 
       UserCtrl.updateUser(input.name, input.age, input.height, input.weight);
       UICtrl.clearUserFormState(UserCtrl.getCurrentUser());
-      UICtrl.updateUserUI(UserCtrl.getCurrentUser())
+      UICtrl.updateUserUI(UserCtrl.getCurrentUser());
+
+      StorageCtrl.setUsers(UserCtrl.getUsers(), UserCtrl.getCurrentUser());
     }
   }
 
@@ -180,6 +183,8 @@ const App = (function() {
     UICtrl.deleteUserUI(UserCtrl.getCurrentUser());
     UserCtrl.deleteUser();
     UICtrl.clearUserFormState(UserCtrl.getCurrentUser());
+
+    StorageCtrl.setUsers(UserCtrl.getUsers(), UserCtrl.getCurrentUser());
   }
 
   return {
