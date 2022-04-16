@@ -115,7 +115,7 @@ const App = (function() {
   function clearAll() {
     ItemsCtrl.clearAllItems();
     UICtrl.populateItemList(ItemsCtrl.getItems(UserCtrl.getCurrentUser()));
-    UICtrl.updateCalories(ItemsCtrl.getTotalCalories());
+    UICtrl.updateCalories(ItemsCtrl.getTotalCalories(UserCtrl.getCurrentUser()));
     StorageCtrl.setLocalItems(ItemsCtrl.getItems(false));
   }
 
